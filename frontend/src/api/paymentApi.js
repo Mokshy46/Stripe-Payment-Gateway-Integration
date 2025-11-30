@@ -1,14 +1,13 @@
 import api from "./axiosClient";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe("pk_test_51SMNspHZMGfpni4JAeIzpk0Ima8cE9PdCmwVkvVysGoJDFjj96WkMxq938GCxkLsy3xVkm5us4IaAcnwUxoJTA9A00HHHpStu3");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-export const fetchProducts = () => api.get("/");
-
-export const fetchProduct = (id) => api.get(`/${id}/`);
+export const fetchProducts = () => api.get("/api/");
+export const fetchProduct = (id) => api.get(`/api/${id}/`);
 
 export const createPaymentIntent = async (amount) => {
-  const res = await api.post("payment/create-intent/", { amount });
+  const res = await api.post("/api/payment/create-intent/", { amount });
   return res.data;
 };
 
