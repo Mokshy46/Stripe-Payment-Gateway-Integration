@@ -1,31 +1,36 @@
-import { useSearchParams, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "../components/CheckoutForm";
-import "./CheckoutPage.css";
+import { createPaymentIntent, fetchProduct } from "../api/paymentApi"; 
 
-const stripePromise = loadStripe(
-  "pk_test_51SMNspHZMGfpni4JAeIzpk0Ima8cE9PdCmwVkvVysGoJDFjj96WkMxq938GCxkLsy3xVkm5us4IaAcnwUxoJTA9A00HHHpStu3"
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export default function CheckoutPage() {
   const { id } = useParams();
-  const [params] = useSearchParams();
-  const clientSecret = params.get("secret");
+  const [clientSecret, setClientSecret] = useState("");
+  const [product, setProduct] = useState(null);
 
-  if (!clientSecret)
-    return (
-      <div className="checkout-wrapper">
-        <h2 className="checkout-error">No payment session found.</h2>
-      </div>
-    );
+  useEffect(() => {
+    fetchProduct(id).then((res) => {
+      setProduct(res.data);
+
+      createPaymentIntent(res.data.price).then((data) => {
+        setClientSecret(data.clientSecret);
+      });
+
+    });
+  }, [id]);
+
+  if (!clientSecret) return <h2>Loading checkout...</h2>;
 
   return (
     <div className="checkout-wrapper">
       <h1 className="checkout-heading">Checkout</h1>
 
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <CheckoutForm clientSecret={clientSecret} />
+        <CheckoutForm clientSecret={clientSecret} product={product} />
       </Elements>
     </div>
   );
