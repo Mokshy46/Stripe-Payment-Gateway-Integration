@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 import { getProduct } from "../api/productsApi";
 import { createPaymentIntent } from "../api/paymentApi";
 
-import LoadingScreen from "../components/LoadingScreen";  // ⬅ ADD THIS
+import LoadingScreen from "../components/LoadingScreen"; 
 import "./ProductDetailPage.css";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(false); // ⬅ ADD THIS
+  const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     getProduct(id)
@@ -18,7 +18,7 @@ export default function ProductDetailPage() {
   }, [id]);
 
   const handleBuyNow = async () => {
-    setLoading(true); // ⬅ SHOW LOADING SCREEN IMMEDIATELY
+    setLoading(true);
 
     try {
       const res = await createPaymentIntent(product.price * 100);
