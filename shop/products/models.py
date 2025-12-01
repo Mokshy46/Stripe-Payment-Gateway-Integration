@@ -24,7 +24,7 @@ class Products(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     category = models.ForeignKey(ProductsCategory, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/', blank=True)
+    image = models.ImageField(upload_to='images/', blank=True)
     desc = models.TextField(_("Description"))    
 
     created_at = models.DateTimeField(auto_now_add=True)
